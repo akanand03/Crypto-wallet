@@ -1,183 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CryptoHub: Track Market Data</title>
-    <!-- Bootstrap CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <!-- Custom CSS -->
-    <style>
-      body {
-        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-        background-size: cover;
-        font-family: 'Nunito', sans-serif;
-        color: #ffffff;
-      }
-      h1 {
-        font-weight: bold;
-        color: #ffffff;
-        text-align: center;
-        margin-top: 20px;
-      }
-      .tagline {
-        text-align: center;
-        font-size: 18px;
-        color: #a0d9d9;
-        margin-top: -10px;
-        margin-bottom: 30px;
-      }
-      .form-container {
-        background-color: #1f2833;
-        padding: 30px;
-        border-radius: 10px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-        max-width: 600px;
-        margin: 40px auto;
-      }
-      label {
-        font-weight: 500;
-        color: #66fcf1;
-      }
-      .form-select,
-      .form-control {
-        background-color: #0b0c10;
-        color: white;
-        border: 1px solid #45a29e;
-      }
-      .form-select:focus,
-      .form-control:focus {
-        border-color: #66fcf1;
-        box-shadow: none;
-      }
-      .form-check-input {
-        background-color: #1f2833;
-        border-color: #45a29e;
-      }
-      .btn-custom {
-        background-color: #45a29e;
-        color: #0b0c10;
-        border: none;
-        transition: background-color 0.3s ease;
-      }
-      .btn-custom:hover {
-        background-color: #66fcf1;
-      }
-      .error-message {
-        color: #e74c3c;
-        font-weight: bold;
-        margin-top: 15px;
-        text-align: center;
-      }
-      .loader-container {
-        display: none;
-        justify-content: center;
-        align-items: center;
-        margin-top: 20px;
-      }
-      .loader {
-        border: 8px solid #f3f3f3;
-        border-radius: 50%;
-        border-top: 8px solid #3498db;
-        width: 60px;
-        height: 60px;
-        animation: spin 2s linear infinite;
-      }
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <h1>CryptoHub</h1>
-      <p class="tagline">Track real-time data for your favorite cryptocurrencies</p>
+{% extends "base.html" %}
+{% block title %}CryptoHub - Home{% endblock %}
 
-      <div class="form-container">
-        <form id="cryptoForm" method="POST">
-          <!-- Cryptocurrency Selection -->
-          <div class="mb-3">
-            <label for="coin_id" class="form-label">Select Cryptocurrency:</label>
-            <select name="coin_id" class="form-select" required>
-              {% for coin in coins %}
-              <option value="{{ coin }}">{{ coin }}</option>
-              {% endfor %}
-            </select>
-          </div>
+{% block content %}
+<h1 class="header-title mt-5 text-center">Welcome to CryptoHub</h1>
+<p class="tagline text-center mb-5">Track real-time data for your favorite cryptocurrencies</p>
 
-          <!-- Days Input -->
-          <div class="mb-3">
-            <label for="days" class="form-label">Enter number of days:</label>
-            <input
-              type="number"
-              name="days"
-              class="form-control"
-              placeholder="Enter days (e.g., 7, 30, 90)"
-              required
-            />
-          </div>
+<div class="d-flex justify-content-between">
+    <!-- Left Column: Wallet Form -->
+    <div class="wallet-container bg-white p-4 rounded shadow-sm w-50">
+        <h2 class="mb-4">Your Crypto Wallet</h2>
+        <form method="POST">
+            <div class="mb-3">
+                <label for="coin_id" class="form-label">Select Cryptocurrency:</label>
+                <select name="coin_id" class="form-select" required>
+                    {% for coin in coins %}
+                    <option value="{{ coin }}">{{ coin.capitalize() }}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
-          <!-- File Format Selection -->
-          <div class="mb-3">
-            <label for="file_format" class="form-label">Select file format:</label>
-            <select name="file_format" class="form-select" required>
-              <option value="csv">CSV</option>
-              <option value="xlsx">XLSX</option>
-            </select>
-          </div>
+            <div class="mb-3">
+                <label for="days" class="form-label">Enter number of days:</label>
+                <input type="number" name="days" class="form-control" placeholder="Enter days (e.g., 7, 30, 90)" required />
+            </div>
 
-          <!-- Show Data in Browser Checkbox -->
-          <div class="form-check mb-3">
-            <input
-              type="checkbox"
-              name="show_data"
-              value="1"
-              class="form-check-input"
-              id="show_data"
-            />
-            <label class="form-check-label" for="show_data">Show data in browser</label>
-          </div>
+            <div class="mb-3">
+                <label for="file_format" class="form-label">Select file format:</label>
+                <select name="file_format" class="form-select" required>
+                    <option value="csv">CSV</option>
+                    <option value="xlsx">XLSX</option>
+                </select>
+            </div>
 
-          <!-- Submit Button -->
-          <div class="d-grid">
-            <button type="submit" class="btn btn-custom">Get Data</button>
-          </div>
+            <div class="form-check mb-3">
+                <input type="checkbox" name="show_data" value="1" class="form-check-input" id="show_data" />
+                <label class="form-check-label" for="show_data">Show data in browser</label>
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-custom">Get Data</button>
+            </div>
         </form>
-
-        <!-- Loader Animation -->
-        <div class="loader-container">
-          <div class="loader"></div>
-        </div>
-
-        <!-- Error Message -->
-        {% if error %}
-        <p class="error-message">{{ error }}</p>
-        {% endif %}
-      </div>
     </div>
-
-    <!-- Bootstrap JS -->
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-    ></script>
-
-    <!-- Custom JS for Loader -->
-    <script>
-      const form = document.getElementById('cryptoForm');
-      const loader = document.querySelector('.loader-container');
-
-      form.addEventListener('submit', function () {
-        // Show the loader when the form is submitted
-        loader.style.display = 'flex';
-      });
-    </script>
-  </body>
-</html>
+</div>
+{% endblock %}
