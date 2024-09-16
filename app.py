@@ -9,6 +9,9 @@ import os
 
 app = Flask(__name__)
 
+# API key for the service
+API_KEY = 'CG-12MX98iwgNSUv51UHxHEbcAK'
+
 # Directory to store downloaded files
 DOWNLOAD_FOLDER = 'downloads'
 if not os.path.exists(DOWNLOAD_FOLDER):
@@ -19,7 +22,8 @@ if not os.path.exists(DOWNLOAD_FOLDER):
 def index():
     # Fetch list of available coins from CoinGecko API
     try:
-        response = requests.get('https://api.coingecko.com/api/v3/coins/markets', params={'vs_currency': 'usd'})
+        headers = {'Authorization': f'Bearer {API_KEY}'}
+        response = requests.get('https://api.coingecko.com/api/v3/coins/markets', params={'vs_currency': 'usd'}, headers=headers)
         response.raise_for_status()  # Check if the response contains errors
         coins_list = response.json()  # Parse the response as JSON
     except requests.exceptions.RequestException as e:
@@ -54,24 +58,14 @@ def index():
             predictions, df = get_market_chart(coin_id, days)
             print(f"Predictions for {coin_id} successfully fetched")  # Debugging statement
 
-            # Check if the user opted to show the data in the browser
-            if request.form.get('show_data'):
-                print("Displaying data in browser")  # Debugging statement
-                # Pass OHLC data as list of dictionaries
-                df_records = df.to_dict(orient='records')
-                logo_url = CRYPTO_LOGOS.get(coin_id, "")
-                return render_template('data.html',
-                                       predictions=predictions,
-                                       coin_id=coin_id,
-                                       days=days,
-                                       df=df_records,
-                                       logo_url=logo_url)
-            else:
-                # Save the data to the requested format and return it for download
-                filename = save_to_file(df, file_format)
-                filepath = os.path.join(DOWNLOAD_FOLDER, filename)
-                print(f"Sending file: {filepath} for download")  # Debugging statement
-                return send_file(filepath, as_attachment=True)
+            # Render the data page with predictions and OHLC data
+            logo_url = CRYPTO_LOGOS.get(coin_id, "")
+            return render_template('data.html',
+                                   predictions=predictions,
+                                   coin_id=coin_id,
+                                   days=days,
+                                   df=df.to_dict(orient='records'),
+                                   logo_url=logo_url)
 
         except ValueError as e:
             return render_template('index.html', error=str(e), coins=coins)
@@ -83,7 +77,8 @@ def index():
 # Function to fetch OHLC market data and perform predictions
 def get_market_chart(coin_id, days):
     try:
-        response = requests.get(f'https://api.coingecko.com/api/v3/coins/{coin_id}/ohlc', params={'vs_currency': 'usd', 'days': days})
+        headers = {'Authorization': f'Bearer {API_KEY}'}
+        response = requests.get(f'https://api.coingecko.com/api/v3/coins/{coin_id}/ohlc', params={'vs_currency': 'usd', 'days': days}, headers=headers)
         response.raise_for_status()  # Raise an exception for bad HTTP responses
     except requests.exceptions.RequestException as e:
         raise ValueError(f"Failed to fetch OHLC data for {coin_id}. Error: {e}")

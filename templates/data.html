@@ -1,442 +1,457 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cryptocurrency Data for {{ coin_id|capitalize }}</title>
-    
+
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
-    
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+
     <!-- AOS Library for Animations -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
-    
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"
+    />
+
     <!-- Chart.js for Data Visualization -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
+
     <!-- Custom CSS -->
     <style>
-        /* Global Styles */
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
-            padding: 20px;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
+      /* Global Styles */
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: #f8f9fa;
+        color: #333;
+        padding: 20px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
 
-        /* Dark Mode Styles */
-        body.dark-mode {
-            background-color: #121212;
-            color: #f0f0f0;
-        }
+      /* Dark Mode Styles */
+      body.dark-mode {
+        background-color: #121212;
+        color: #f0f0f0;
+      }
 
-        /* Full-Screen Container */
-        .full-screen {
-            min-height: 100vh;
-        }
+      /* Full-Screen Container */
+      .full-screen {
+        min-height: 100vh;
+      }
 
-        /* Card Styles */
-        .card {
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            border-radius: 15px;
-            margin-top: 30px;
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
-            overflow: hidden;
-        }
+      /* Card Styles */
+      .card {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        border-radius: 15px;
+        margin-top: 30px;
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
+        overflow: hidden;
+      }
 
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-        }
+      .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+      }
 
-        body.dark-mode .card {
-            background-color: #1a1a1a;
-            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
-        }
+      body.dark-mode .card {
+        background-color: #1a1a1a;
+        box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
+      }
 
-        body.dark-mode .card:hover {
-            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
-        }
+      body.dark-mode .card:hover {
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+      }
 
-        /* Card Header with Dynamic Logo */
+      /* Card Header with Dynamic Logo */
+      .card-header {
+        background-color: #007bff;
+        color: white;
+        font-weight: 600;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        transition: background-color 0.3s ease;
+      }
+
+      body.dark-mode .card-header {
+        background-color: #333;
+      }
+
+      .card-header img {
+        width: 40px;
+        height: 40px;
+        margin-right: 15px;
+        transition: transform 0.3s ease;
+      }
+
+      .card-header:hover img {
+        transform: scale(1.1) rotate(15deg);
+      }
+
+      /* Table Styles */
+      .table {
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .table thead {
+        background-color: #007bff;
+        color: white;
+      }
+
+      body.dark-mode .table thead {
+        background-color: #333;
+      }
+
+      .table tbody tr {
+        transition: background-color 0.3s ease, transform 0.2s ease;
+      }
+
+      .table tbody tr:hover {
+        background-color: #f1f1f1;
+        transform: scale(1.02);
+      }
+
+      body.dark-mode .table tbody tr:hover {
+        background-color: #2c2c2c;
+      }
+
+      /* Button Styles */
+      .btn-primary {
+        background-color: #007bff;
+        border: none;
+        padding: 10px 20px;
+        font-size: 1.2rem;
+        border-radius: 30px;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+      }
+
+      .btn-primary:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+      }
+
+      body.dark-mode .btn-primary {
+        background-color: #1a73e8;
+      }
+
+      body.dark-mode .btn-primary:hover {
+        background-color: #1669c1;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
         .card-header {
-            background-color: #007bff;
-            color: white;
-            font-weight: 600;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            transition: background-color 0.3s ease;
-        }
-
-        body.dark-mode .card-header {
-            background-color: #333;
+          flex-direction: column;
         }
 
         .card-header img {
-            width: 40px;
-            height: 40px;
-            margin-right: 15px;
-            transition: transform 0.3s ease;
+          margin-right: 0;
+          margin-bottom: 10px;
         }
 
-        .card-header:hover img {
-            transform: scale(1.1) rotate(15deg);
-        }
-
-        /* Table Styles */
-        .table {
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .table thead {
-            background-color: #007bff;
-            color: white;
-        }
-
-        body.dark-mode .table thead {
-            background-color: #333;
-        }
-
-        .table tbody tr {
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        .table tbody tr:hover {
-            background-color: #f1f1f1;
-            transform: scale(1.02);
-        }
-
-        body.dark-mode .table tbody tr:hover {
-            background-color: #2c2c2c;
-        }
-
-        /* Button Styles */
         .btn-primary {
-            background-color: #007bff;
-            border: none;
-            padding: 10px 20px;
-            font-size: 1.2rem;
-            border-radius: 30px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+          width: 100%;
+        }
+      }
+
+      /* Fade-In Animation */
+      .fade-in {
+        animation: fadeIn 1s ease-in-out forwards;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
         }
 
-        .btn-primary:hover {
-            background-color: #0056b3;
-            transform: scale(1.05);
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
+      }
 
-        body.dark-mode .btn-primary {
-            background-color: #1a73e8;
-        }
+      /* Chart Container */
+      .chart-container {
+        position: relative;
+        margin-top: 40px;
+        height: 400px;
+      }
 
-        body.dark-mode .btn-primary:hover {
-            background-color: #1669c1;
-        }
+      /* Dark Mode for Tables */
+      body.dark-mode .table tbody {
+        background-color: #1a1a1a;
+      }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .card-header {
-                flex-direction: column;
-            }
+      body.dark-mode .table tbody td {
+        color: #f0f0f0;
+      }
 
-            .card-header img {
-                margin-right: 0;
-                margin-bottom: 10px;
-            }
+      /* Scroll to Top Button */
+      #scrollToTopBtn {
+        position: fixed;
+        bottom: 40px;
+        right: 40px;
+        display: none;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        padding: 15px;
+        font-size: 1.5rem;
+        cursor: pointer;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        z-index: 1000;
+      }
 
-            .btn-primary {
-                width: 100%;
-            }
-        }
+      #scrollToTopBtn:hover {
+        background-color: #0056b3;
+        transform: scale(1.1);
+      }
 
-        /* Fade-In Animation */
-        .fade-in {
-            animation: fadeIn 1s ease-in-out forwards;
-        }
+      body.dark-mode #scrollToTopBtn {
+        background-color: #1a73e8;
+      }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Chart Container */
-        .chart-container {
-            position: relative;
-            margin-top: 40px;
-            height: 400px;
-        }
-
-        /* Dark Mode for Tables */
-        body.dark-mode .table tbody {
-            background-color: #1a1a1a;
-        }
-
-        body.dark-mode .table tbody td {
-            color: #f0f0f0;
-        }
-
-        /* Scroll to Top Button */
-        #scrollToTopBtn {
-            position: fixed;
-            bottom: 40px;
-            right: 40px;
-            display: none;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            padding: 15px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            transition: background-color 0.3s ease, transform 0.3s ease;
-            z-index: 1000;
-        }
-
-        #scrollToTopBtn:hover {
-            background-color: #0056b3;
-            transform: scale(1.1);
-        }
-
-        body.dark-mode #scrollToTopBtn {
-            background-color: #1a73e8;
-        }
-
-        body.dark-mode #scrollToTopBtn:hover {
-            background-color: #1669c1;
-        }
+      body.dark-mode #scrollToTopBtn:hover {
+        background-color: #1669c1;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="container-fluid full-screen fade-in">
-        <div class="row justify-content-center">
-            <div class="col-12 col-lg-8">
-                <!-- Card for Cryptocurrency Data -->
-                <div class="card" data-aos="fade-up">
-                    <div class="card-header text-center">
-                        <!-- Dynamic Cryptocurrency Logo -->
-                        <img src="{{ logo_url }}" alt="{{ coin_id|capitalize }} Logo">
-                        Cryptocurrency Data for {{ coin_id|capitalize }}
-                    </div>
-                    <div class="card-body">
-                        <h3 class="text-center text-muted mb-5">Over the Past {{ days }} Days</h3>
+      <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+          <!-- Card for Cryptocurrency Data -->
+          <div class="card" data-aos="fade-up">
+            <div class="card-header text-center">
+              <!-- Dynamic Cryptocurrency Logo -->
+              <img src="{{ logo_url }}" alt="{{ coin_id|capitalize }} Logo" />
+              Cryptocurrency Data for {{ coin_id|capitalize }}
+            </div>
+            <div class="card-body">
+              <h3 class="text-center text-muted mb-5">
+                Over the Past {{ days }} Days
+              </h3>
 
-                        <!-- Table for Predictions -->
-                        <div class="table-responsive">
-                            <table class="table table-hover table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Date</th>
-                                        <th scope="col">Predicted Price (USD)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for date, price in predictions.items() %}
-                                    <tr>
-                                        <td>{{ date }}</td>
-                                        <td>${{ price | round(2) }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+              <!-- Table for Predictions -->
+              <div class="table-responsive">
+                <table class="table table-hover table-bordered">
+                  <thead>
+                    <tr>
+                      <th scope="col">Date</th>
+                      <th scope="col">Predicted Price (USD)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for date, price in predictions.items() %}
+                    <tr>
+                      <td>{{ date }}</td>
+                      <td>${{ price | round(2) }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
 
-                        <!-- Table for OHLC Data -->
-                        <div class="table-responsive mt-4">
-                            <h4>OHLC Data (Open, High, Low, Close)</h4>
-                            <table class="table table-hover table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Date</th>
-                                        <th scope="col">Open (USD)</th>
-                                        <th scope="col">High (USD)</th>
-                                        <th scope="col">Low (USD)</th>
-                                        <th scope="col">Close (USD)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for row in df %}
-                                    <tr>
-                                        <td>{{ row.Date }}</td>
-                                        <td>${{ row.Open }}</td>
-                                        <td>${{ row.High }}</td>
-                                        <td>${{ row.Low }}</td>
-                                        <td>${{ row.Close }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+              <!-- Table for OHLC Data -->
+              <div class="table-responsive mt-4">
+                <h4>OHLC Data (Open, High, Low, Close)</h4>
+                <table class="table table-hover table-bordered">
+                  <thead>
+                    <tr>
+                      <th scope="col">Date</th>
+                      <th scope="col">Open (USD)</th>
+                      <th scope="col">High (USD)</th>
+                      <th scope="col">Low (USD)</th>
+                      <th scope="col">Close (USD)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for row in df %}
+                    <tr>
+                      <td>{{ row['time'] }}</td>
+                      <td>${{ row['open'] }}</td>
+                      <td>${{ row['high'] }}</td>
+                      <td>${{ row['low'] }}</td>
+                      <td>${{ row['close'] }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
 
-                        <!-- Chart for Predictions -->
-                        <div class="chart-container">
-                            <canvas id="predictionChart"></canvas>
-                        </div>
+              <!-- Chart for Predictions -->
+              <div class="chart-container">
+                <canvas id="predictionChart"></canvas>
+              </div>
 
-                        <!-- Back to Home Button -->
-                        <div class="text-center mt-4">
-                            <a href="/" class="btn btn-primary" aria-label="Back to Home">
-                                <i class="fas fa-home"></i> Back to Home
-                            </a>
-                        </div>
-                    </div>
-                </div>
+              <!-- Back to Home Button -->
+              <div class="text-center mt-4">
+                <a href="/" class="btn btn-primary" aria-label="Back to Home">
+                  <i class="fas fa-home"></i> Back to Home
+                </a>
+              </div>
+            </div>
+          </div>
 
-                <!-- Chart.js Script -->
-                <script>
-                    // Prepare data for Chart.js
-                    const predictionLabels = {{ predictions.keys()|list|tojson }};
-                    const predictionData = {{ predictions.values()|list|tojson }};
+          <!-- Chart.js Script -->
+          <script>
+            // Prepare data for Chart.js
+            const predictionLabels = {{ predictions.keys()|list|tojson }};
+            const predictionData = {{ predictions.values()|list|tojson }};
 
-                    const ctx = document.getElementById('predictionChart').getContext('2d');
-                    const predictionChart = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: predictionLabels,
-                            datasets: [{
-                                label: 'Predicted Price (USD)',
-                                data: predictionData,
-                                borderColor: '#007bff',
-                                backgroundColor: 'rgba(0, 123, 255, 0.1)',
-                                borderWidth: 2,
-                                fill: true,
-                                tension: 0.3,
-                                pointRadius: 4,
-                                pointBackgroundColor: '#007bff',
-                                pointBorderColor: '#fff',
-                                pointHoverRadius: 6,
-                                pointHoverBackgroundColor: '#fff',
-                                pointHoverBorderColor: '#007bff',
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    display: true,
-                                    labels: {
-                                        color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#f0f0f0' : '#333',
-                                        font: {
-                                            size: 14
-                                        }
-                                    }
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Predicted Cryptocurrency Prices',
-                                    color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#f0f0f0' : '#333',
-                                    font: {
-                                        size: 18
-                                    }
-                                }
-                            },
-                            scales: {
-                                x: {
-                                    ticks: {
-                                        color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#f0f0f0' : '#333',
-                                        font: {
-                                            size: 12
-                                        }
-                                    },
-                                    grid: {
-                                        color: 'rgba(0,0,0,0.05)'
-                                    }
-                                },
-                                y: {
-                                    ticks: {
-                                        color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#f0f0f0' : '#333',
-                                        font: {
-                                            size: 12
-                                        }
-                                    },
-                                    grid: {
-                                        color: 'rgba(0,0,0,0.05)'
-                                    }
+            const ctx = document.getElementById('predictionChart').getContext('2d');
+            const predictionChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: predictionLabels,
+                    datasets: [{
+                        label: 'Predicted Price (USD)',
+                        data: predictionData,
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#007bff',
+                        pointBorderColor: '#fff',
+                        pointHoverRadius: 6,
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#007bff',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            labels: {
+                                color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#f0f0f0' : '#333',
+                                font: {
+                                    size: 14
                                 }
                             }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Predicted Cryptocurrency Prices',
+                            color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#f0f0f0' : '#333',
+                            font: {
+                                size: 18
+                            }
                         }
-                    });
-
-                    // Function to update chart colors based on theme
-                    function updateChartTheme() {
-                        const isDarkMode = document.body.classList.contains('dark-mode');
-                        const chartTitle = predictionChart.options.plugins.title;
-                        const chartLegend = predictionChart.options.plugins.legend;
-                        const xTicks = predictionChart.options.scales.x.ticks;
-                        const yTicks = predictionChart.options.scales.y.ticks;
-
-                        chartTitle.color = isDarkMode ? '#f0f0f0' : '#333';
-                        chartLegend.labels.color = isDarkMode ? '#f0f0f0' : '#333';
-                        xTicks.color = isDarkMode ? '#f0f0f0' : '#333';
-                        yTicks.color = isDarkMode ? '#f0f0f0' : '#333';
-
-                        predictionChart.update();
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#f0f0f0' : '#333',
+                                font: {
+                                    size: 12
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)'
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#f0f0f0' : '#333',
+                                font: {
+                                    size: 12
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)'
+                            }
+                        }
                     }
+                }
+            });
 
-                    // Observe changes to the body class for dark mode
-                    const observer = new MutationObserver(updateChartTheme);
-                    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
-                </script>
+            // Function to update chart colors based on theme
+            function updateChartTheme() {
+                const isDarkMode = document.body.classList.contains('dark-mode');
+                const chartTitle = predictionChart.options.plugins.title;
+                const chartLegend = predictionChart.options.plugins.legend;
+                const xTicks = predictionChart.options.scales.x.ticks;
+                const yTicks = predictionChart.options.scales.y.ticks;
 
-                <!-- Scroll to Top Button -->
-                <button id="scrollToTopBtn" aria-label="Scroll to top">
-                    <i class="fas fa-arrow-up"></i>
-                </button>
+                chartTitle.color = isDarkMode ? '#f0f0f0' : '#333';
+                chartLegend.labels.color = isDarkMode ? '#f0f0f0' : '#333';
+                xTicks.color = isDarkMode ? '#f0f0f0' : '#333';
+                yTicks.color = isDarkMode ? '#f0f0f0' : '#333';
 
-                <!-- Scroll to Top Script -->
-                <script>
-                    const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+                predictionChart.update();
+            }
 
-                    window.onscroll = function() {
-                        if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-                            scrollToTopBtn.style.display = "block";
-                        } else {
-                            scrollToTopBtn.style.display = "none";
-                        }
-                    };
+            // Observe changes to the body class for dark mode
+            const observer = new MutationObserver(updateChartTheme);
+            observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+          </script>
 
-                    scrollToTopBtn.addEventListener('click', () => {
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                    });
-                </script>
-            </div>
+          <!-- Scroll to Top Button -->
+          <button id="scrollToTopBtn" aria-label="Scroll to top">
+            <i class="fas fa-arrow-up"></i>
+          </button>
+
+          <!-- Scroll to Top Script -->
+          <script>
+            const scrollToTopBtn = document.getElementById("scrollToTopBtn");
+
+            window.onscroll = function () {
+              if (
+                document.body.scrollTop > 300 ||
+                document.documentElement.scrollTop > 300
+              ) {
+                scrollToTopBtn.style.display = "block";
+              } else {
+                scrollToTopBtn.style.display = "none";
+              }
+            };
+
+            scrollToTopBtn.addEventListener("click", () => {
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            });
+          </script>
         </div>
+      </div>
     </div>
 
     <!-- Bootstrap JS and Dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <!-- AOS JS for Animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-    
+
     <!-- Initialize AOS -->
     <script>
-        AOS.init({
-            duration: 800,
-            once: true,
-        });
+      AOS.init({
+        duration: 800,
+        once: true,
+      });
     </script>
-</body>
-
+  </body>
 </html>
