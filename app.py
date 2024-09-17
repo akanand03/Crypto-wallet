@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, send_file
+from flask import Flask, render_template, request
 import requests
 import numpy as np
 import pandas as pd
@@ -9,126 +9,13 @@ import os
 
 app = Flask(__name__)
 
-# API key for the service
-API_KEY = 'CG-12MX98iwgNSUv51UHxHEbcAK'
+# API key for the CryptoCompare service
+API_KEY = '34186b853765c755b0a4277d311fdaccf0ee2795b1863080f6f14d1e0e3869a1'
 
-# Directory to store downloaded files
+# Directory to store downloaded files (if needed)
 DOWNLOAD_FOLDER = 'downloads'
 if not os.path.exists(DOWNLOAD_FOLDER):
     os.makedirs(DOWNLOAD_FOLDER)
-
-# Main route to display the form and get crypto data
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    # Fetch list of available coins from CoinGecko API
-    try:
-        headers = {'Authorization': f'Bearer {API_KEY}'}
-        response = requests.get('https://api.coingecko.com/api/v3/coins/markets', params={'vs_currency': 'usd'}, headers=headers)
-        response.raise_for_status()  # Check if the response contains errors
-        coins_list = response.json()  # Parse the response as JSON
-    except requests.exceptions.RequestException as e:
-        return render_template('index.html', error=f"Failed to fetch coins list: {e}", coins=[])
-
-    # Create a mapping of coin_id to logo_url
-    CRYPTO_LOGOS = {coin['id']: coin['image'] for coin in coins_list}
-
-    # List of coins
-    coins = list(CRYPTO_LOGOS.keys())
-
-    # Handle form submission
-    if request.method == 'POST':
-        print("Form submitted")  # Debugging statement
-        coin_id = request.form.get('coin_id')
-        days = request.form.get('days')
-        file_format = request.form.get('file_format', 'csv')
-
-        # Validate selected coin
-        if coin_id not in coins:
-            return render_template('index.html', error="Invalid cryptocurrency selected.", coins=coins)
-
-        # Validate number of days
-        try:
-            days = int(days)
-            if days not in [1, 7, 14, 30, 90, 180, 365]:
-                raise ValueError("Invalid number of days. Please choose from: 1, 7, 14, 30, 90, 180, 365.")
-        except ValueError as ve:
-            return render_template('index.html', error=str(ve), coins=coins)
-
-        try:
-            predictions, df = get_market_chart(coin_id, days)
-            print(f"Predictions for {coin_id} successfully fetched")  # Debugging statement
-
-            # Render the data page with predictions and OHLC data
-            logo_url = CRYPTO_LOGOS.get(coin_id, "")
-            return render_template('data.html',
-                                   predictions=predictions,
-                                   coin_id=coin_id,
-                                   days=days,
-                                   df=df.to_dict(orient='records'),
-                                   logo_url=logo_url)
-
-        except ValueError as e:
-            return render_template('index.html', error=str(e), coins=coins)
-        except Exception as ex:
-            return render_template('index.html', error=f"An unexpected error occurred: {ex}", coins=coins)
-
-    return render_template('index.html', coins=coins)
-
-# Function to fetch OHLC market data and perform predictions
-def get_market_chart(coin_id, days):
-    try:
-        headers = {'Authorization': f'Bearer {API_KEY}'}
-        response = requests.get(f'https://api.coingecko.com/api/v3/coins/{coin_id}/ohlc', params={'vs_currency': 'usd', 'days': days}, headers=headers)
-        response.raise_for_status()  # Raise an exception for bad HTTP responses
-    except requests.exceptions.RequestException as e:
-        raise ValueError(f"Failed to fetch OHLC data for {coin_id}. Error: {e}")
-
-    ohlc_data = response.json()
-    if not ohlc_data or not isinstance(ohlc_data, list):
-        raise ValueError(f"OHLC data is empty or not in expected format for {coin_id}")
-
-    ohlc = np.array(ohlc_data)
-    if len(ohlc.shape) != 2 or ohlc.shape[1] != 5:
-        raise ValueError(f"Expected OHLC data to be 2D with 5 columns (time, open, high, low, close), got shape: {ohlc.shape}")
-
-    df = pd.DataFrame(ohlc, columns=['time', 'open', 'high', 'low', 'close'])
-    df['time'] = pd.to_datetime(df['time'], unit='ms')
-
-    # Feature Engineering for Prediction
-    df['day'] = df['time'].dt.dayofyear
-    X = df[['day', 'close']].values
-    y = df['close'].values
-
-    # Scaling Features
-    scaler = MinMaxScaler()
-    X_scaled = scaler.fit_transform(X)
-
-    # Model Training
-    model = LinearRegression()
-    model.fit(X_scaled, y)
-
-    # Predictions
-    y_pred = model.predict(X_scaled)
-
-    # Generate future dates for predictions
-    start_date = df['time'].iloc[-1] + timedelta(days=1)
-    dates = [(start_date + timedelta(days=i)).strftime('%Y-%m-%d') for i in range(len(y_pred))]
-
-    predictions = {date: pred for date, pred in zip(dates, y_pred)}
-    return predictions, df
-
-# Function to save data to CSV or XLSX
-def save_to_file(df, file_format):
-    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-
-    if file_format == 'xlsx':
-        filename = f"market_data_{timestamp}.xlsx"
-        df.to_excel(os.path.join(DOWNLOAD_FOLDER, filename), index=False)
-    else:
-        filename = f"market_data_{timestamp}.csv"
-        df.to_csv(os.path.join(DOWNLOAD_FOLDER, filename), index=False)
-
-    return filename
 
 # Clean up downloaded files older than 1 day to save storage
 def cleanup_downloads():
@@ -140,10 +27,125 @@ def cleanup_downloads():
             if now - file_time > timedelta(days=1):
                 os.remove(filepath)
 
-# Schedule cleanup every time the app runs (for demonstration; use proper scheduling in production)
-@app.before_first_request
-def before_first_request_func():
-    cleanup_downloads()
+# Call cleanup_downloads when the app starts
+cleanup_downloads()
+
+# Fetch list of available coins from CryptoCompare API
+def fetch_coin_list():
+    try:
+        response = requests.get(
+            'https://min-api.cryptocompare.com/data/all/coinlist',
+            params={'api_key': API_KEY}
+        )
+        response.raise_for_status()
+        coins_data = response.json()['Data']
+        coins = sorted(coins_data.keys())
+        CRYPTO_LOGOS = {
+            symbol: f"https://www.cryptocompare.com{data['ImageUrl']}"
+            for symbol, data in coins_data.items()
+            if data.get('ImageUrl')
+        }
+        return coins, CRYPTO_LOGOS
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching coin list: {e}")
+        return [], {}
+
+# Main route to display the form and get crypto data
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    coins, CRYPTO_LOGOS = fetch_coin_list()
+
+    # Handle form submission
+    if request.method == 'POST':
+        coin_symbol = request.form.get('coin_id')
+        days = request.form.get('days')
+        file_format = request.form.get('file_format', 'csv')
+
+        # Validate selected coin
+        if coin_symbol not in coins:
+            return render_template('index.html', error="Invalid cryptocurrency selected.", coins=coins)
+
+        # Validate number of days
+        try:
+            days = int(days)
+            if days < 1 or days > 2000:
+                raise ValueError("Invalid number of days. Please choose between 1 and 2000.")
+        except ValueError as ve:
+            return render_template('index.html', error=str(ve), coins=coins)
+
+        try:
+            predictions, df = get_market_chart(coin_symbol, days)
+
+            # Render the data page with predictions and OHLC data
+            logo_url = CRYPTO_LOGOS.get(coin_symbol, "")
+            return render_template(
+                'data.html',
+                predictions=predictions,
+                coin_id=coin_symbol,
+                days=days,
+                df=df.to_dict(orient='records'),
+                logo_url=logo_url
+            )
+
+        except ValueError as e:
+            return render_template('index.html', error=str(e), coins=coins)
+        except Exception as ex:
+            return render_template('index.html', error=f"An unexpected error occurred: {ex}", coins=coins)
+
+    return render_template('index.html', coins=coins)
+
+# Function to fetch OHLC market data and perform predictions
+def get_market_chart(coin_symbol, days):
+    limit = days - 1  # Adjusting limit for the API parameter
+    try:
+        response = requests.get(
+            'https://min-api.cryptocompare.com/data/v2/histoday',
+            params={
+                'fsym': coin_symbol,
+                'tsym': 'USD',
+                'limit': limit,
+                'api_key': API_KEY
+            }
+        )
+        response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        raise ValueError(f"Failed to fetch historical data for {coin_symbol}. Error: {e}")
+
+    data = response.json()
+    if data['Response'] != 'Success':
+        raise ValueError(f"Error fetching data: {data.get('Message', 'Unknown error')}")
+
+    historical_data = data['Data']['Data']
+    if not historical_data or not isinstance(historical_data, list):
+        raise ValueError(f"Historical data is empty or not in expected format for {coin_symbol}")
+
+    df = pd.DataFrame(historical_data)
+    df['time'] = pd.to_datetime(df['time'], unit='s')
+
+    # Feature Engineering for Prediction
+    df['day'] = df['time'].dt.dayofyear
+    X = df[['day']].values  # Using 'day' as the feature
+    y = df['close'].values
+
+    # Scaling Features
+    scaler = MinMaxScaler()
+    X_scaled = scaler.fit_transform(X)
+
+    # Model Training
+    model = LinearRegression()
+    model.fit(X_scaled, y)
+
+    # Predictions for the next 'days' days
+    future_days = np.array([df['day'].iloc[-1] + i for i in range(1, days + 1)])
+    future_days_scaled = scaler.transform(future_days.reshape(-1, 1))
+    y_pred = model.predict(future_days_scaled)
+
+    # Generate future dates for predictions
+    start_date = df['time'].iloc[-1] + timedelta(days=1)
+    dates = [(start_date + timedelta(days=i)).strftime('%Y-%m-%d') for i in range(days)]
+
+    predictions = {date: pred for date, pred in zip(dates, y_pred)}
+    return predictions, df
 
 if __name__ == '__main__':
     app.run(debug=True)

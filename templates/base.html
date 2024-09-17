@@ -1009,7 +1009,7 @@
               alt="Bitcoin"
             />
             <h5>Bitcoin</h5>
-            <p>Price: $48,000</p>
+            <p id="btc-price">Price: Loading...</p>
           </div>
         </div>
         <div class="col-md-4">
@@ -1020,7 +1020,7 @@
               alt="Ethereum"
             />
             <h5>Ethereum</h5>
-            <p>Price: $3,500</p>
+            <p id="eth-price">Price: Loading...</p>
           </div>
         </div>
         <div class="col-md-4">
@@ -1031,7 +1031,7 @@
               alt="Cardano"
             />
             <h5>Cardano</h5>
-            <p>Price: $2.30</p>
+            <p id="ada-price">Price: Loading...</p>
           </div>
         </div>
       </div>
@@ -1044,7 +1044,7 @@
               alt="Ripple"
             />
             <h5>Ripple</h5>
-            <p>Price: $1.00</p>
+            <p id="xrp-price">Price: Loading...</p>
           </div>
         </div>
         <div class="col-md-4">
@@ -1055,7 +1055,7 @@
               alt="Litecoin"
             />
             <h5>Litecoin</h5>
-            <p>Price: $160</p>
+            <p id="ltc-price">Price: Loading...</p>
           </div>
         </div>
         <div class="col-md-4">
@@ -1066,7 +1066,7 @@
               alt="Dogecoin"
             />
             <h5>Dogecoin</h5>
-            <p>Price: $0.50</p>
+            <p id="doge-price">Price: Loading...</p>
           </div>
         </div>
       </div>
@@ -1080,7 +1080,7 @@
               alt="Polkadot"
             />
             <h5>Polkadot</h5>
-            <p>Price: $25.00</p>
+            <p id="dot-price">Price: Loading...</p>
           </div>
         </div>
         <div class="col-md-4">
@@ -1091,7 +1091,7 @@
               alt="Solana"
             />
             <h5>Solana</h5>
-            <p>Price: $150.00</p>
+            <p id="sol-price">Price: Loading...</p>
           </div>
         </div>
         <div class="col-md-4">
@@ -1102,7 +1102,7 @@
               alt="Chainlink"
             />
             <h5>Chainlink</h5>
-            <p>Price: $30.00</p>
+            <p id="link-price">Price: Loading...</p>
           </div>
         </div>
       </div>
@@ -1148,93 +1148,135 @@
         once: true,
       });
 
-      // Dynamic chart using Chart.js for Cryptocurrency prices
-      const ctx = document.getElementById("cryptoChart").getContext("2d");
-      const cryptoChart = new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: ["January", "February", "March", "April", "May", "June"],
-          datasets: [
-            {
-              label: "Bitcoin",
-              data: [32000, 35000, 42000, 48000, 50000, 55000],
-              borderColor: "#ff9900",
-              backgroundColor: "rgba(255, 153, 0, 0.2)",
-              fill: true,
-              tension: 0.4,
-              pointRadius: 5,
-              pointBackgroundColor: "#ff9900",
-            },
-            {
-              label: "Ethereum",
-              data: [1000, 1200, 3000, 3500, 4000, 4500],
-              borderColor: "#3c3cde",
-              backgroundColor: "rgba(60, 60, 222, 0.2)",
-              fill: true,
-              tension: 0.4,
-              pointRadius: 5,
-              pointBackgroundColor: "#3c3cde",
-            },
-            {
-              label: "Cardano",
-              data: [1.5, 1.8, 2.1, 2.3, 2.5, 2.8],
-              borderColor: "#24e4c3",
-              backgroundColor: "rgba(36, 228, 195, 0.2)",
-              fill: true,
-              tension: 0.4,
-              pointRadius: 5,
-              pointBackgroundColor: "#24e4c3",
-            },
-            {
-              label: "Ripple",
-              data: [0.5, 0.6, 0.8, 1.0, 1.2, 1.3],
-              borderColor: "#0000ff",
-              backgroundColor: "rgba(0, 0, 255, 0.2)",
-              fill: true,
-              tension: 0.4,
-              pointRadius: 5,
-              pointBackgroundColor: "#0000ff",
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: {
-              position: "top",
-              labels: {
-                color: "#121212",
+      // Your API key
+      const apiKey =
+        "34186b853765c755b0a4277d311fdaccf0ee2795b1863080f6f14d1e0e3869a1";
+
+      // List of cryptocurrencies to fetch
+      const cryptoList = ["BTC", "ETH", "ADA", "XRP", "LTC", "DOGE", "DOT", "SOL", "LINK"];
+
+      // Function to fetch historical data for the chart
+      async function fetchCryptoData(symbol) {
+        const response = await fetch(
+          `https://min-api.cryptocompare.com/data/v2/histoday?fsym=${symbol}&tsym=USD&limit=30&api_key=${apiKey}`
+        );
+        const data = await response.json();
+        return data.Data.Data;
+      }
+
+      // Function to fetch current price data for the cards
+      async function fetchCurrentPrice(symbol) {
+        const response = await fetch(
+          `https://min-api.cryptocompare.com/data/price?fsym=${symbol}&tsyms=USD&api_key=${apiKey}`
+        );
+        const data = await response.json();
+        return data.USD;
+      }
+
+      // Function to prepare chart data
+      async function prepareChartData() {
+        const datasets = [];
+        const labels = [];
+
+        // Fetch data for each cryptocurrency
+        for (let i = 0; i < cryptoList.length; i++) {
+          const symbol = cryptoList[i];
+          const historicalData = await fetchCryptoData(symbol);
+
+          // Extract dates and prices
+          const dates = historicalData.map((entry) =>
+            new Date(entry.time * 1000).toLocaleDateString()
+          );
+          const prices = historicalData.map((entry) => entry.close);
+
+          // Use dates for labels if it's the first dataset
+          if (i === 0) {
+            labels.push(...dates);
+          }
+
+          // Prepare dataset
+          datasets.push({
+            label: symbol,
+            data: prices,
+            borderColor: getRandomColor(),
+            backgroundColor: "rgba(0, 0, 0, 0)",
+            fill: false,
+            tension: 0.4,
+            pointRadius: 3,
+          });
+        }
+
+        return { labels, datasets };
+      }
+
+      // Function to generate random colors for each line
+      function getRandomColor() {
+        const letters = "0123456789ABCDEF";
+        let color = "#";
+        for (let i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+      }
+
+      // Initialize the chart
+      async function initChart() {
+        const chartData = await prepareChartData();
+
+        const ctx = document.getElementById("cryptoChart").getContext("2d");
+        window.cryptoChart = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: chartData.labels,
+            datasets: chartData.datasets,
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: "top",
+                labels: {
+                  color: document.body.classList.contains("dark-mode")
+                    ? "#f0f0f0"
+                    : "#121212",
+                },
+              },
+              title: {
+                display: true,
+                text: "Cryptocurrency Prices Over the Last 30 Days",
+                color: document.body.classList.contains("dark-mode")
+                  ? "#f0f0f0"
+                  : "#121212",
+                font: {
+                  size: 18,
+                },
               },
             },
-            title: {
-              display: true,
-              text: "Cryptocurrency Prices Over Time",
-              color: "#121212",
-              font: {
-                size: 18,
+            scales: {
+              x: {
+                ticks: {
+                  color: document.body.classList.contains("dark-mode")
+                    ? "#f0f0f0"
+                    : "#121212",
+                },
+                grid: {
+                  color: "rgba(0,0,0,0.1)",
+                },
+              },
+              y: {
+                ticks: {
+                  color: document.body.classList.contains("dark-mode")
+                    ? "#f0f0f0"
+                    : "#121212",
+                },
+                grid: {
+                  color: "rgba(0,0,0,0.1)",
+                },
               },
             },
           },
-          scales: {
-            x: {
-              ticks: {
-                color: "#121212",
-              },
-              grid: {
-                color: "rgba(0,0,0,0.1)",
-              },
-            },
-            y: {
-              ticks: {
-                color: "#121212",
-              },
-              grid: {
-                color: "rgba(0,0,0,0.1)",
-              },
-            },
-          },
-        },
-      });
+        });
+      }
 
       // Update chart colors based on dark mode
       function updateChartColors() {
@@ -1253,6 +1295,35 @@
           : "#121212";
         cryptoChart.update();
       }
+
+      // Function to update cryptocurrency prices in the cards
+      async function updateCryptoPrices() {
+        const priceElements = {
+          BTC: document.getElementById("btc-price"),
+          ETH: document.getElementById("eth-price"),
+          ADA: document.getElementById("ada-price"),
+          XRP: document.getElementById("xrp-price"),
+          LTC: document.getElementById("ltc-price"),
+          DOGE: document.getElementById("doge-price"),
+          DOT: document.getElementById("dot-price"),
+          SOL: document.getElementById("sol-price"),
+          LINK: document.getElementById("link-price"),
+        };
+
+        for (const symbol of cryptoList) {
+          const price = await fetchCurrentPrice(symbol);
+          if (priceElements[symbol]) {
+            priceElements[symbol].textContent = `Price: $${price.toLocaleString()}`;
+          }
+        }
+      }
+
+      // Call the functions to render the chart and update prices
+      initChart();
+      updateCryptoPrices();
+
+      // Refresh prices every minute
+      setInterval(updateCryptoPrices, 60000);
     </script>
   </body>
 </html>
