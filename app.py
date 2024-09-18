@@ -75,7 +75,6 @@ def index():
 
         try:
             predictions, df = get_market_chart(coin_symbol, days)
-
             # Render the data page with predictions and OHLC data
             logo_url = CRYPTO_LOGOS.get(coin_symbol, "")
             return render_template(
@@ -88,8 +87,10 @@ def index():
             )
 
         except ValueError as e:
+            print(f"Error processing data: {e}")
             return render_template('index.html', error=str(e), coins=coins)
         except Exception as ex:
+            print(f"Unexpected error: {ex}")
             return render_template('index.html', error=f"An unexpected error occurred: {ex}", coins=coins)
 
     return render_template('index.html', coins=coins)
@@ -108,16 +109,21 @@ def get_market_chart(coin_symbol, days):
             }
         )
         response.raise_for_status()
+        data = response.json()
+        
+        # Check if the API returned a success response and contains the expected data
+        if data.get('Response') != 'Success' or not data['Data'].get('Data'):
+            raise ValueError(f"Error fetching data: {data.get('Message', 'Unknown error')}")
+
     except requests.exceptions.RequestException as e:
         raise ValueError(f"Failed to fetch historical data for {coin_symbol}. Error: {e}")
 
-    data = response.json()
-    if data['Response'] != 'Success':
-        raise ValueError(f"Error fetching data: {data.get('Message', 'Unknown error')}")
-
+    # Extract the historical data
     historical_data = data['Data']['Data']
+    
+    # Check if the historical data is valid
     if not historical_data or not isinstance(historical_data, list):
-        raise ValueError(f"Historical data is empty or not in expected format for {coin_symbol}")
+        raise ValueError(f"No valid historical data available for {coin_symbol}.")
 
     df = pd.DataFrame(historical_data)
     df['time'] = pd.to_datetime(df['time'], unit='s')

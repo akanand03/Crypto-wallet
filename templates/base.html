@@ -33,6 +33,9 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"
     />
 
+    <!-- Particles.js for animated background -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+
     <!-- Custom CSS -->
     <style>
       /* Smooth scrolling animation */
@@ -74,6 +77,7 @@
         font-weight: 700;
         font-size: 1.7rem;
         color: #121212;
+        transition: color 0.3s ease;
       }
 
       body.dark-mode .navbar-brand {
@@ -84,6 +88,7 @@
         color: #121212;
         font-weight: 500;
         font-size: 1.2rem;
+        transition: color 0.3s ease;
       }
 
       body.dark-mode .nav-link {
@@ -102,12 +107,16 @@
         border: none;
         border-radius: 20px;
         font-size: 1rem;
-        transition: background-color 0.3s ease;
+        transition: background-color 0.3s ease, transform 0.3s ease;
       }
 
       body.dark-mode .toggle-dark-mode {
         background-color: #007bff;
         color: #fff;
+      }
+
+      .toggle-dark-mode:hover {
+        transform: scale(1.05);
       }
 
       /* Welcome Section */
@@ -119,6 +128,8 @@
         padding: 120px 0 80px 0;
         color: inherit;
         text-align: center;
+        position: relative;
+        overflow: hidden;
       }
 
       .welcome-text {
@@ -132,11 +143,13 @@
         color: #00bfff;
         font-weight: 700;
         margin-bottom: 20px;
+        animation: fadeInDown 1s ease-out;
       }
 
       .welcome-text p {
         font-size: 1.5rem;
         color: inherit;
+        animation: fadeInUp 1s ease-out;
       }
 
       /* Swimming Pool Effect */
@@ -150,6 +163,7 @@
         background: linear-gradient(180deg, #00bfff 0%, #0077be 100%);
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
         animation: fadeIn 1s ease;
+        transition: background-color 0.3s ease;
       }
 
       body.dark-mode .pool-container {
@@ -204,6 +218,7 @@
         animation: rise 7s infinite ease-in;
         opacity: 0;
         z-index: 1;
+        transition: transform 0.3s, box-shadow 0.3s;
       }
 
       @keyframes rise {
@@ -226,8 +241,9 @@
       }
 
       /* Additional Bubbles for Variety */
+      /* Increased number of bubbles from 10 to 20 */
       .bubble:nth-child(1) {
-        left: 10%;
+        left: 5%;
         animation-duration: 6s;
         animation-delay: 0s;
         width: 12px;
@@ -235,7 +251,7 @@
       }
 
       .bubble:nth-child(2) {
-        left: 25%;
+        left: 15%;
         animation-duration: 8s;
         animation-delay: 1s;
         width: 8px;
@@ -243,7 +259,7 @@
       }
 
       .bubble:nth-child(3) {
-        left: 40%;
+        left: 25%;
         animation-duration: 7s;
         animation-delay: 2s;
         width: 10px;
@@ -251,7 +267,7 @@
       }
 
       .bubble:nth-child(4) {
-        left: 55%;
+        left: 35%;
         animation-duration: 9s;
         animation-delay: 0.5s;
         width: 14px;
@@ -259,7 +275,7 @@
       }
 
       .bubble:nth-child(5) {
-        left: 70%;
+        left: 45%;
         animation-duration: 5s;
         animation-delay: 1.5s;
         width: 9px;
@@ -267,7 +283,7 @@
       }
 
       .bubble:nth-child(6) {
-        left: 85%;
+        left: 55%;
         animation-duration: 7.5s;
         animation-delay: 2.5s;
         width: 11px;
@@ -275,7 +291,7 @@
       }
 
       .bubble:nth-child(7) {
-        left: 15%;
+        left: 65%;
         animation-duration: 6.5s;
         animation-delay: 0.8s;
         width: 10px;
@@ -283,7 +299,7 @@
       }
 
       .bubble:nth-child(8) {
-        left: 35%;
+        left: 75%;
         animation-duration: 8.5s;
         animation-delay: 1.2s;
         width: 13px;
@@ -291,7 +307,7 @@
       }
 
       .bubble:nth-child(9) {
-        left: 50%;
+        left: 85%;
         animation-duration: 5.5s;
         animation-delay: 0.3s;
         width: 7px;
@@ -299,16 +315,103 @@
       }
 
       .bubble:nth-child(10) {
-        left: 65%;
+        left: 95%;
         animation-duration: 9.5s;
         animation-delay: 2.8s;
         width: 12px;
         height: 12px;
       }
 
-      /* Stop Bubbles on Hover */
+      /* Additional Bubbles */
+      .bubble:nth-child(11) {
+        left: 20%;
+        animation-duration: 6.2s;
+        animation-delay: 0.4s;
+        width: 11px;
+        height: 11px;
+      }
+
+      .bubble:nth-child(12) {
+        left: 30%;
+        animation-duration: 7.3s;
+        animation-delay: 1.1s;
+        width: 10px;
+        height: 10px;
+      }
+
+      .bubble:nth-child(13) {
+        left: 40%;
+        animation-duration: 8.1s;
+        animation-delay: 1.7s;
+        width: 12px;
+        height: 12px;
+      }
+
+      .bubble:nth-child(14) {
+        left: 50%;
+        animation-duration: 5.8s;
+        animation-delay: 0.9s;
+        width: 9px;
+        height: 9px;
+      }
+
+      .bubble:nth-child(15) {
+        left: 60%;
+        animation-duration: 7.9s;
+        animation-delay: 2.1s;
+        width: 13px;
+        height: 13px;
+      }
+
+      .bubble:nth-child(16) {
+        left: 70%;
+        animation-duration: 6.7s;
+        animation-delay: 1.4s;
+        width: 10px;
+        height: 10px;
+      }
+
+      .bubble:nth-child(17) {
+        left: 80%;
+        animation-duration: 8.3s;
+        animation-delay: 1.9s;
+        width: 14px;
+        height: 14px;
+      }
+
+      .bubble:nth-child(18) {
+        left: 90%;
+        animation-duration: 5.3s;
+        animation-delay: 0.6s;
+        width: 8px;
+        height: 8px;
+      }
+
+      .bubble:nth-child(19) {
+        left: 10%;
+        animation-duration: 9.2s;
+        animation-delay: 2.4s;
+        width: 12px;
+        height: 12px;
+      }
+
+      .bubble:nth-child(20) {
+        left: 100%;
+        animation-duration: 7.6s;
+        animation-delay: 2.9s;
+        width: 11px;
+        height: 11px;
+      }
+
+      /* Stop Bubbles on Hover and Add Hover Effects */
       .pool-container:hover .bubble {
         animation-play-state: paused;
+      }
+
+      .bubble:hover {
+        transform: translateY(-10px) scale(1.2);
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        opacity: 1;
       }
 
       /* Crypto Logos Swimming */
@@ -334,6 +437,7 @@
         overflow: hidden;
         /* Assign multiple animations */
         animation: swim-1 10s ease-in-out infinite, rotate 20s linear infinite;
+        transition: transform 0.3s ease;
       }
 
       .crypto-logo-inner {
@@ -518,6 +622,7 @@
         font-weight: 700;
         margin-bottom: 30px;
         color: #ffd700;
+        animation: fadeInDown 1s ease-out;
       }
 
       .crypto-wallet-card {
@@ -526,7 +631,8 @@
         border-radius: 15px;
         box-shadow: 0 4px 20px rgba(255, 215, 0, 0.5);
         margin-bottom: 30px;
-        transition: transform 0.3s, box-shadow 0.3s;
+        transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+        animation: fadeInUp 1s ease-out;
       }
 
       body.dark-mode .crypto-wallet-card {
@@ -537,10 +643,12 @@
       .crypto-wallet-card:hover {
         transform: scale(1.05);
         box-shadow: 0 6px 25px rgba(255, 215, 0, 0.7);
+        background-color: #fffbea;
       }
 
       body.dark-mode .crypto-wallet-card:hover {
         box-shadow: 0 6px 25px rgba(255, 215, 0, 0.4);
+        background-color: #2a2a2a;
       }
 
       /* Professional Famous Insights Section */
@@ -554,6 +662,7 @@
         font-weight: 700;
         margin-bottom: 30px;
         color: #00bfff;
+        animation: fadeInDown 1s ease-out;
       }
 
       .insight-card {
@@ -562,10 +671,11 @@
         border-left: 5px solid #00bfff;
         border-radius: 5px;
         margin-bottom: 20px;
-        transition: background-color 0.3s, box-shadow 0.3s;
+        transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
         display: inline-block;
         max-width: 600px;
         text-align: left;
+        animation: fadeInUp 1s ease-out;
       }
 
       body.dark-mode .insight-card {
@@ -576,11 +686,13 @@
       .insight-card:hover {
         background-color: #e2e6ea;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        transform: translateY(-5px);
       }
 
       body.dark-mode .insight-card:hover {
         background-color: #1e1e1e;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        transform: translateY(-5px);
       }
 
       .insight-card p {
@@ -602,6 +714,9 @@
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
         margin: 15px;
         transition: transform 0.3s ease-in-out, background-color 0.3s ease, box-shadow 0.3s;
+        position: relative;
+        overflow: hidden;
+        animation: fadeInUp 1s ease-out;
       }
 
       body.dark-mode .crypto-card {
@@ -624,6 +739,11 @@
         width: 80px;
         height: 80px;
         margin-bottom: 20px;
+        transition: transform 0.3s ease;
+      }
+
+      .crypto-card:hover .crypto-logo-card {
+        transform: rotate(360deg);
       }
 
       .crypto-card h5 {
@@ -631,6 +751,7 @@
         font-weight: 600;
         margin-bottom: 15px;
         color: #121212;
+        transition: color 0.3s ease;
       }
 
       body.dark-mode .crypto-card h5 {
@@ -653,6 +774,7 @@
         padding: 30px 0;
         text-align: center;
         margin-top: 50px;
+        position: relative;
       }
 
       body.dark-mode footer {
@@ -663,10 +785,12 @@
       footer a {
         color: #00bfff;
         text-decoration: none;
+        transition: color 0.3s ease;
       }
 
       footer a:hover {
         text-decoration: underline;
+        color: #0077be;
       }
 
       /* Animations */
@@ -692,6 +816,17 @@
         }
       }
 
+      @keyframes fadeInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
       @keyframes fadeIn {
         from {
           opacity: 0;
@@ -710,6 +845,12 @@
         font-size: 2rem;
         color: #fff;
         animation: bounce 2s infinite;
+        cursor: pointer;
+        transition: color 0.3s ease;
+      }
+
+      .scroll-down:hover {
+        color: #00bfff;
       }
 
       @keyframes bounce {
@@ -775,10 +916,31 @@
           height: 100%;
         }
       }
+
+      /* Accessibility: Reduce motion for users who prefer it */
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+
+      /* Particles Background */
+      #particles-js {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        top: 0;
+        left: 0;
+      }
     </style>
   </head>
 
   <body>
+    <!-- Particles.js Background -->
+    <div id="particles-js"></div>
+
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg">
       <div class="container-fluid">
@@ -807,21 +969,21 @@
     </nav>
 
     <!-- Welcome Section -->
-    <div class="container welcome-section">
+    <div class="container welcome-section" data-aos="fade-up">
       <div class="welcome-text" data-aos="fade-up">
         <h1>Welcome to CryptoHub</h1>
         <p>
           Your one-stop destination for live cryptocurrency data and insights.
         </p>
       </div>
-      <div class="pool-container" data-aos="fade-up">
+      <div class="pool-container" data-aos="zoom-in">
         <!-- Crypto Logos Swimming -->
         <div class="crypto-logo-container">
           <!-- Each logo has an inner div for rotation -->
           <div class="crypto-logo">
             <div class="crypto-logo-inner">
               <img
-                src="https://cryptologos.cc/logos/bitcoin-btc-logo.png"
+                src="https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=014"
                 alt="Bitcoin"
               />
             </div>
@@ -829,7 +991,7 @@
           <div class="crypto-logo">
             <div class="crypto-logo-inner">
               <img
-                src="https://cryptologos.cc/logos/ethereum-eth-logo.png"
+                src="https://cryptologos.cc/logos/ethereum-eth-logo.png?v=014"
                 alt="Ethereum"
               />
             </div>
@@ -837,7 +999,7 @@
           <div class="crypto-logo">
             <div class="crypto-logo-inner">
               <img
-                src="https://cryptologos.cc/logos/cardano-ada-logo.png"
+                src="https://cryptologos.cc/logos/cardano-ada-logo.png?v=014"
                 alt="Cardano"
               />
             </div>
@@ -845,7 +1007,7 @@
           <div class="crypto-logo">
             <div class="crypto-logo-inner">
               <img
-                src="https://cryptologos.cc/logos/dogecoin-doge-logo.png"
+                src="https://cryptologos.cc/logos/dogecoin-doge-logo.png?v=014"
                 alt="Dogecoin"
               />
             </div>
@@ -853,7 +1015,7 @@
           <div class="crypto-logo">
             <div class="crypto-logo-inner">
               <img
-                src="https://cryptologos.cc/logos/binance-coin-bnb-logo.png"
+                src="https://cryptologos.cc/logos/binance-coin-bnb-logo.png?v=014"
                 alt="Binance Coin"
               />
             </div>
@@ -862,7 +1024,7 @@
           <div class="crypto-logo">
             <div class="crypto-logo-inner">
               <img
-                src="https://cryptologos.cc/logos/polkadot-new-dot-logo.png"
+                src="https://cryptologos.cc/logos/polkadot-new-dot-logo.png?v=014"
                 alt="Polkadot"
               />
             </div>
@@ -870,7 +1032,7 @@
           <div class="crypto-logo">
             <div class="crypto-logo-inner">
               <img
-                src="https://cryptologos.cc/logos/solana-sol-logo.png"
+                src="https://cryptologos.cc/logos/solana-sol-logo.png?v=014"
                 alt="Solana"
               />
             </div>
@@ -878,7 +1040,7 @@
           <div class="crypto-logo">
             <div class="crypto-logo-inner">
               <img
-                src="https://cryptologos.cc/logos/xrp-xrp-logo.png"
+                src="https://cryptologos.cc/logos/xrp-xrp-logo.png?v=014"
                 alt="Ripple"
               />
             </div>
@@ -886,7 +1048,7 @@
           <div class="crypto-logo">
             <div class="crypto-logo-inner">
               <img
-                src="https://cryptologos.cc/logos/litecoin-ltc-logo.png"
+                src="https://cryptologos.cc/logos/litecoin-ltc-logo.png?v=014"
                 alt="Litecoin"
               />
             </div>
@@ -894,7 +1056,7 @@
           <div class="crypto-logo">
             <div class="crypto-logo-inner">
               <img
-                src="https://cryptologos.cc/logos/chainlink-link-logo.png"
+                src="https://cryptologos.cc/logos/chainlink-link-logo.png?v=014"
                 alt="Chainlink"
               />
             </div>
@@ -906,6 +1068,7 @@
           <div class="water-wave"></div>
         </div>
         <!-- Bubbles -->
+        <!-- Increased number of bubbles from 10 to 20 -->
         <div class="bubble"></div>
         <div class="bubble"></div>
         <div class="bubble"></div>
@@ -916,8 +1079,18 @@
         <div class="bubble"></div>
         <div class="bubble"></div>
         <div class="bubble"></div>
-        <!-- Scroll Down Arrow -->
-        <div class="scroll-down">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <!-- Scroll Down Arrow with Click-to-Scroll -->
+        <div class="scroll-down" onclick="scrollToContent()">
           <i class="fas fa-chevron-down"></i>
         </div>
       </div>
@@ -931,13 +1104,13 @@
       <!-- Famous Insights on the Left -->
       <div class="col-lg-4 insight-section">
         <h3>Famous Insights</h3>
-        <div class="insight-card">
+        <div class="insight-card" data-aos="flip-left">
           <p>
             “Blockchain is the tech. Bitcoin is merely the first mainstream
             manifestation of its potential.” — Marc Kenigsberg
           </p>
         </div>
-        <div class="insight-card">
+        <div class="insight-card" data-aos="flip-right">
           <p>
             “Cryptocurrency is such a powerful concept that it can almost
             overturn governments.” — Charles Lee
@@ -946,12 +1119,13 @@
       </div>
 
       <!-- Highlighted Crypto Wallet Section on the Right -->
-      <div class="col-lg-7 crypto-wallet">
+      <div class="col-lg-7 crypto-wallet" data-aos="fade-left">
         <h3>Your Crypto Wallet</h3>
         <div class="crypto-wallet-card">
           <form method="POST">
             <label>Select Cryptocurrency:</label>
-            <select name="coin_id" class="form-control mb-3">
+            <select name="coin_id" class="form-control mb-3" required>
+              <option value="" disabled selected>Select a cryptocurrency</option>
               <option value="bitcoin">Bitcoin</option>
               <option value="ethereum">Ethereum</option>
               <option value="cardano">Cardano</option>
@@ -973,7 +1147,8 @@
               min="1"
             />
             <label>Select file format:</label>
-            <select name="file_format" class="form-control mb-3">
+            <select name="file_format" class="form-control mb-3" required>
+              <option value="" disabled selected>Select file format</option>
               <option value="csv">CSV</option>
               <option value="xlsx">XLSX</option>
             </select>
@@ -985,9 +1160,9 @@
                 id="show_data"
                 name="show_data"
               />
-              <label class="form-check-label" for="show_data"
-                >Show data in browser</label
-              >
+              <label class="form-check-label" for="show_data">
+                Show data in browser
+              </label>
             </div>
             <button type="submit" class="btn btn-warning btn-lg">
               <i class="fas fa-search"></i> Get Data
@@ -1002,9 +1177,9 @@
       <h3>Live Cryptocurrency Prices</h3>
       <div class="row justify-content-center">
         <div class="col-md-4">
-          <div class="crypto-card">
+          <div class="crypto-card" data-aos="zoom-in">
             <img
-              src="https://cryptologos.cc/logos/bitcoin-btc-logo.png"
+              src="https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=014"
               class="crypto-logo-card"
               alt="Bitcoin"
             />
@@ -1013,9 +1188,9 @@
           </div>
         </div>
         <div class="col-md-4">
-          <div class="crypto-card">
+          <div class="crypto-card" data-aos="zoom-in" data-aos-delay="100">
             <img
-              src="https://cryptologos.cc/logos/ethereum-eth-logo.png"
+              src="https://cryptologos.cc/logos/ethereum-eth-logo.png?v=014"
               class="crypto-logo-card"
               alt="Ethereum"
             />
@@ -1024,9 +1199,9 @@
           </div>
         </div>
         <div class="col-md-4">
-          <div class="crypto-card">
+          <div class="crypto-card" data-aos="zoom-in" data-aos-delay="200">
             <img
-              src="https://cryptologos.cc/logos/cardano-ada-logo.png"
+              src="https://cryptologos.cc/logos/cardano-ada-logo.png?v=014"
               class="crypto-logo-card"
               alt="Cardano"
             />
@@ -1037,9 +1212,9 @@
       </div>
       <div class="row justify-content-center">
         <div class="col-md-4">
-          <div class="crypto-card">
+          <div class="crypto-card" data-aos="zoom-in" data-aos-delay="300">
             <img
-              src="https://cryptologos.cc/logos/xrp-xrp-logo.png"
+              src="https://cryptologos.cc/logos/xrp-xrp-logo.png?v=014"
               class="crypto-logo-card"
               alt="Ripple"
             />
@@ -1048,9 +1223,9 @@
           </div>
         </div>
         <div class="col-md-4">
-          <div class="crypto-card">
+          <div class="crypto-card" data-aos="zoom-in" data-aos-delay="400">
             <img
-              src="https://cryptologos.cc/logos/litecoin-ltc-logo.png"
+              src="https://cryptologos.cc/logos/litecoin-ltc-logo.png?v=014"
               class="crypto-logo-card"
               alt="Litecoin"
             />
@@ -1059,9 +1234,9 @@
           </div>
         </div>
         <div class="col-md-4">
-          <div class="crypto-card">
+          <div class="crypto-card" data-aos="zoom-in" data-aos-delay="500">
             <img
-              src="https://cryptologos.cc/logos/dogecoin-doge-logo.png"
+              src="https://cryptologos.cc/logos/dogecoin-doge-logo.png?v=014"
               class="crypto-logo-card"
               alt="Dogecoin"
             />
@@ -1073,9 +1248,9 @@
       <!-- Additional Cryptocurrency Cards -->
       <div class="row justify-content-center">
         <div class="col-md-4">
-          <div class="crypto-card">
+          <div class="crypto-card" data-aos="zoom-in" data-aos-delay="600">
             <img
-              src="https://cryptologos.cc/logos/polkadot-new-dot-logo.png"
+              src="https://cryptologos.cc/logos/polkadot-new-dot-logo.png?v=014"
               class="crypto-logo-card"
               alt="Polkadot"
             />
@@ -1084,9 +1259,9 @@
           </div>
         </div>
         <div class="col-md-4">
-          <div class="crypto-card">
+          <div class="crypto-card" data-aos="zoom-in" data-aos-delay="700">
             <img
-              src="https://cryptologos.cc/logos/solana-sol-logo.png"
+              src="https://cryptologos.cc/logos/solana-sol-logo.png?v=014"
               class="crypto-logo-card"
               alt="Solana"
             />
@@ -1095,9 +1270,9 @@
           </div>
         </div>
         <div class="col-md-4">
-          <div class="crypto-card">
+          <div class="crypto-card" data-aos="zoom-in" data-aos-delay="800">
             <img
-              src="https://cryptologos.cc/logos/chainlink-link-logo.png"
+              src="https://cryptologos.cc/logos/chainlink-link-logo.png?v=014"
               class="crypto-logo-card"
               alt="Chainlink"
             />
@@ -1115,7 +1290,7 @@
     </div>
 
     <!-- Footer -->
-    <footer>
+    <footer data-aos="fade-up">
       <p>
         © 2024 CryptoHub. All rights reserved. <a href="#">Privacy</a> |
         <a href="#">Terms</a>
@@ -1126,6 +1301,16 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- AOS JS for scroll animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <!-- Particles.js Initialization -->
+    <script>
+      particlesJS.load(
+        "particles-js",
+        "https://cdn.jsdelivr.net/gh/VincentGarreau/particles.js/particles.json",
+        function () {
+          console.log("callback - particles.js config loaded");
+        }
+      );
+    </script>
     <script>
       function toggleDarkMode() {
         document.body.classList.toggle("dark-mode");
@@ -1146,14 +1331,33 @@
       AOS.init({
         duration: 800,
         once: true,
+        easing: "ease-in-out",
       });
+
+      // Scroll to main content when scroll-down arrow is clicked
+      function scrollToContent() {
+        window.scrollTo({
+          top: document.querySelector(".main-content").offsetTop - 70,
+          behavior: "smooth",
+        });
+      }
 
       // Your API key
       const apiKey =
         "34186b853765c755b0a4277d311fdaccf0ee2795b1863080f6f14d1e0e3869a1";
 
       // List of cryptocurrencies to fetch
-      const cryptoList = ["BTC", "ETH", "ADA", "XRP", "LTC", "DOGE", "DOT", "SOL", "LINK"];
+      const cryptoList = [
+        "BTC",
+        "ETH",
+        "ADA",
+        "XRP",
+        "LTC",
+        "DOGE",
+        "DOT",
+        "SOL",
+        "LINK",
+      ];
 
       // Function to fetch historical data for the chart
       async function fetchCryptoData(symbol) {
@@ -1311,9 +1515,16 @@
         };
 
         for (const symbol of cryptoList) {
-          const price = await fetchCurrentPrice(symbol);
-          if (priceElements[symbol]) {
-            priceElements[symbol].textContent = `Price: $${price.toLocaleString()}`;
+          try {
+            const price = await fetchCurrentPrice(symbol);
+            if (priceElements[symbol]) {
+              priceElements[symbol].textContent = `Price: $${price.toLocaleString()}`;
+            }
+          } catch (error) {
+            console.error(`Error fetching price for ${symbol}:`, error);
+            if (priceElements[symbol]) {
+              priceElements[symbol].textContent = `Price: N/A`;
+            }
           }
         }
       }
@@ -1324,6 +1535,16 @@
 
       // Refresh prices every minute
       setInterval(updateCryptoPrices, 60000);
+    </script>
+
+    <!-- Custom JS for Accessibility and Performance -->
+    <script>
+      // Reduce motion for users who prefer it
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        AOS.init({
+          disable: true,
+        });
+      }
     </script>
   </body>
 </html>
